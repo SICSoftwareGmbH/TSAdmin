@@ -1,0 +1,18 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html"; charset=utf-8" />
+  <title>Reverse Proxy Configuration</title>
+  <link rel="stylesheet" href="/layout.css" type="text/css" />
+</head>
+<body>
+  <h1>Reverse Proxy Configuration</h1>
+
+  <?r if flashbox("%value").size > 0 ?>
+  <div id="error">#{flashbox("%value")}</div>
+  <?r end ?>
+
+  #{@content}
+
+</body>
+</html>
+
