@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["florian.schwab@sic-software.com"]
   spec.description   = %q{Frontend for managing ATS remap configuration}
   spec.summary       = %q{Frontend for managing ATS remap configuration}
-  spec.homepage      = "http://www.sic-software.com/"
+  spec.homepage      = "https://github.com/SICSoftwareGmbH/TSAdmin"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
