@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ts-admin (0.2.0)
+    ts-admin (0.2.1)
       ramaze (>= 2.0.0)
 
 GEM

@@ -16,7 +16,7 @@ class RemapController < Controller
       @to = request[:to]
       if traffic_server.add_remap(@type, @from, @to)
         traffic_server.save
-        traffic_server.restart
+        restart_traffic_server
         flash[:info] = "Remap entry added"
         call(r('/'))
       else
@@ -39,7 +39,7 @@ class RemapController < Controller
       @to = request[:to]
       if traffic_server.edit_remap(@id, @from, @to)
         traffic_server.save
-        traffic_server.restart
+        restart_traffic_server
         flash[:info] = "Remap entry updated"
         call(r('/'))
       else
@@ -61,7 +61,7 @@ class RemapController < Controller
 
     traffic_server.delete_remap(request[:id])
     traffic_server.save
-    traffic_server.restart
+    restart_traffic_server
 
     flash[:info] = "Remap entry removed"
 

@@ -46,6 +46,17 @@ class Controller < Ramaze::Controller
     @_traffic_server ||= ::TSAdmin::TrafficServer.new(APP_CONFIG['traffic_server'])
   end
 
+  def restart_traffic_server
+    @@restart_scheduled = true
+    @@restart_thread = Thread.new do
+      while @@restart_scheduled
+        @@restart_scheduled = false
+        traffic_server.restart
+      end
+      @@restart_thread = nil
+    end if !defined?(@@restart_thread) || @@restart_thread.nil?
+  end
+
 end
 
 # Here you can require all your other controllers. Note that if you have multiple

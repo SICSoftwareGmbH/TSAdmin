@@ -4,7 +4,7 @@ class MainController < Controller
     return unless login_required
 
     external_ip_fallback = '<span class="none">none</span>'
-    @external_ip = (APP_CONFIG['info']['external_ip2'] || external_ip_fallback) rescue external_ip_fallback
+    @external_ip = (APP_CONFIG['info']['external_ip'] || external_ip_fallback) rescue external_ip_fallback
   end
 
 end

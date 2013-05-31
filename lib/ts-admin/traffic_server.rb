@@ -71,10 +71,12 @@ module TSAdmin
       own_config = ''
       own_config << "#{marker_begin}\n"
       redirects.each do |redirect|
-        own_config << "redirect #{redirect[:from]} #{redirect[:to]} #{redirect[:options] if redirect[:options]}\n"
+        options = redirect[:options] ? '' : ''
+        own_config << "redirect #{redirect[:from]} #{redirect[:to]} #{options}\n"
       end
       maps.each do |map|
-        own_config << "map #{map[:from]} #{map[:to]} #{map[:options] if map[:options]}\n"
+        options = map[:options] ? '' : ''
+        own_config << "map #{map[:from]} #{map[:to]} #{options}\n"
       end
       own_config << "#{marker_end}\n"
 
