@@ -1,4 +1,4 @@
-source "http://rubygems.org"
+source 'https://rubygems.org'
 
-gem "ramaze"
-
+# Specify your gem's dependencies in TSAdmin.gemspec
+gemspec

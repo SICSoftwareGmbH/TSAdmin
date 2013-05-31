@@ -1,0 +1,12 @@
+port: 7000
+
+auth:
+  username: admin
+  password: d033e22ae348aeb5660fc2140aec35850c4da997 # SHA1 hash
+
+traffic_server:
+  config_path: /etc/trafficserver
+  restart_cmd: /etc/init.d/trafficserver restart
+
+info:
+  external_ip: 192.168.0.1

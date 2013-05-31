@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+
+# Parse options
+require 'optparse'
+
+OPTIONS = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: tsadmin [options]"
+
+  opts.on("-c", "--config [path]", "Port") do |config|
+    OPTIONS[:config] = config
+  end
+  opts.on("-p", "--port [port]", "Port") do |port|
+    OPTIONS[:port] = port.to_i
+  end
+end.parse!
+
+# Start TSAdmin
+require File.expand_path('../../app', __FILE__)
+
+Ramaze.start(
+  :adapter => :webrick,
+  :port    => OPTIONS[:port] || APP_CONFIG['port'] || 7000,
+  :file    => __FILE__,
+  :root    => Ramaze.options.roots
+)

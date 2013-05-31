@@ -1,14 +1,24 @@
-GEM
-  remote: http://rubygems.org/
+PATH
+  remote: .
   specs:
-    innate (2011.12)
-      rack (~> 1.4.0)
-    rack (1.4.1)
-    ramaze (2011.12.28)
-      innate (>= 2011.12)
+    ts-admin (0.2.0)
+      ramaze (>= 2.0.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    innate (2013.02.21)
+      rack (~> 1.5.2)
+    rack (1.5.2)
+    rake (10.0.4)
+    ramaze (2012.12.08)
+      innate (>= 2012.12)
+      rake
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  ramaze
+  bundler (~> 1.3)
+  rake
+  ts-admin!

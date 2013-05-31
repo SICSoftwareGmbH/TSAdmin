@@ -1,0 +1,18 @@
+<div class="grid_12 content">
+  <header>
+    <h2>Remap entry</h2>
+  </header>
+  <form method="post" action="/remap/#{defined?(@id) ? 'edit' : 'new'}">
+    <p>
+      <label for="from">From</label>
+      <input type="text" name="from" value="#{@from if defined?(@from)}" style="width: 400px;" />
+    </p>
+    <p>
+      <label for="to">To</label>
+      <input type="text" name="to" value="#{@to if defined?(@to)}" style="width: 400px;" />
+    </p>
+    <input type="submit" value="Save" />
+    <input type="hidden" name="type" value="#{@type}" />
+    <input type="hidden" name="id" value="#{@id if defined?(@id)}" />
+  </form>
+</div>

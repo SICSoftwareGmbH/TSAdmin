@@ -1,0 +1,254 @@
+/**
+ * Stylesheet used for the layout of most elements.
+ *
+ * @author Yorick Peterse
+ * @link   http://yorickpeterse.com/
+ */
+
+#container
+{
+  margin:  20px auto;
+  width:   940px;
+}
+
+div.content
+{
+  background:    #fff;
+  border:        1px solid #ddd;
+  padding:       20px;
+}
+
+div.grid_12.content
+{
+  width: 898px;
+  margin-bottom: 20px;
+}
+
+div.grid_12.content:last-child
+{
+  margin-bottom: 0px;
+}
+
+  div.content header
+  {
+    margin-bottom: 20px;
+  }
+
+  div.content div.buttons
+  {
+    float: right;
+    padding-top: 6px;
+    width: 54px;
+    text-align: right;
+  }
+
+span.none
+{
+  font-style:italic;
+}
+
+/* Flash messages */
+div.flash
+{
+  float: left;
+  border: 1px solid #ddd;
+  padding: 10px;
+  width: 918px;
+  margin-bottom: 20px;
+  background-color: #fff;
+}
+
+div#flash_error
+{
+  color: red;
+}
+
+div#flash_info
+{
+  color: green;
+}
+
+
+/* List form */
+.list-form ul li
+{
+  list-style-type: none;
+  height: 30px;
+  width: 240px;
+}
+
+  .list-form ul li:not(:last-child) input
+  {
+    float: right;
+    display: block;
+    width: 150px;
+  }
+
+  .list-form ul li:last-child
+  {
+    text-align: center;
+  }
+
+/* Tabbed form */
+form p
+{
+  clear: both;
+  height: 10px;
+}
+
+form p label, form p input
+{
+  float: left;
+}
+
+form p label
+{
+  display: block;
+  width: 60px;
+  text-align: right;
+  padding-right: 10px;
+}
+
+/* Top part of the website, contains the title and the navigation menu */
+#top
+{
+  background:    #E33F1E;
+  height:        70px;
+  margin-bottom: 20px;
+  padding:       0px 10px;
+}
+
+  #top header h1, #top header h1 a
+  {
+    color:       #fff;
+    font-size:   38px;
+    margin:      10px 0px 0px 0px;
+    padding:     0px;
+  }
+
+  #top nav ul
+  {
+    float:        right;
+    margin-right: 15px;
+  }
+
+    #top nav ul li
+    {
+      float:           left;
+      font-size:       16px;
+      list-style-type: none;
+      margin-right:    10px;
+    }
+
+      #top nav ul li a
+      {
+        color:           #fff;
+        display:         block;
+        height:          45px;
+        padding:         25px 10px 0px 10px;
+        text-decoration: none;
+      }
+
+      #top nav ul li a:hover, #top nav ul li a.current
+      {
+        background: #D43919;
+      }
+
+      #top nav ul li a.current
+      {
+        font-weight: bold;
+      }
+
+/* Footer at the bottom of the page */
+#footer
+{
+  text-align: center;
+}
+
+  #footer p
+  {
+    font-size:     13px;
+    margin-bottom: 10px;
+  }
+
+/* Remap */
+ul.remap
+{
+  margin: 0;
+  padding: 0;
+}
+
+  ul.remap li
+  {
+    list-style-type: none;
+    width: 100%;
+    height: 23px;
+    margin-bottom: 4px;
+  }
+
+  ul.remap li:hover
+  {
+    background-color: #eee;
+  }
+
+    ul.remap li > span
+    {
+      display: block;
+      float: left;
+      width: 50px;
+      height: 24px;
+      padding-right: 10px;
+    }
+
+    ul.remap li > span:last-child
+    {
+      padding-right: 0px;
+    }
+
+    ul.remap li > span.arrow
+    {
+      text-align: center;
+      padding-top: 5px;
+      height: 19px;
+    }
+
+    ul.remap li > span.buttons
+    {
+      display: block;
+      float: left;
+      width: 38px;
+      padding-left: 10px;
+      text-align: right;
+    }
+
+    ul.remap li > span.buttons a
+    {
+      padding: 0 2px;
+    }
+
+    ul.remap li > span.url
+    {
+      display: block;
+      float: left;
+      width: 385px;
+    }
+
+      ul.remap li > span a
+      {
+        text-decoration: none;
+      }
+
+      ul.remap li > span a:hover
+      {
+        color: #444;
+      }
+
+      ul.remap li > span a span.http
+      {
+        color: red;
+      }
+
+      ul.remap li > span a span.https
+      {
+        color: green;
+      }

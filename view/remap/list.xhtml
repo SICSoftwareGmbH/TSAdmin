@@ -1,0 +1,23 @@
+<div class="grid_12 content">
+  <header>
+    <div class="buttons">
+      <a class="icon-plus" href="/remap/new?type=#{@type}" title="Add new rule"></a>
+    </div>
+    <h2>#{@headline}</h2>
+  </header>
+  <p>
+    <ul class="remap">
+      <?r @traffic_server.send("#{@type}s").each_with_index do |map, i| ?>
+        <li>
+          <span class="url from"><a href="#{map[:from]}">#{remap_url_highlight_scheme(map[:from])}</a></span>
+          <span class="arrow icon-chevron-right"></span>
+          <span class="url to"><a href="#{map[:to]}">#{remap_url_highlight_scheme(map[:to])}</a></span>
+          <span class="buttons">
+            <a class="icon-pencil" href="/remap/edit?id=#{map[:id]}" title="Edit"></a>
+            <a class="icon-trash" href="/remap/delete?id=#{map[:id]}" title="Delete"></a>
+          </span>
+        </li>
+      <?r end ?>
+    </ul>
+  </p>
+</div>

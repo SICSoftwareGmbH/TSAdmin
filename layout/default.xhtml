@@ -1,18 +1,47 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html"; charset=utf-8" />
-  <title>Reverse Proxy Configuration</title>
-  <link rel="stylesheet" href="/layout.css" type="text/css" />
+  <meta charset="utf-8" />
+  <title>TSAdmin#{" :: #{@title}" if defined?(@title)}</title>
+  #{css('reset')}
+  #{css('grid')}
+  #{css('layout')}
+  #{css('text')}
+  #{css('font-awesome.min')}
 </head>
 <body>
-  <h1>Reverse Proxy Configuration</h1>
+  <div class="container">
+    <div id="container" class="row">
+      <div id="top" class="grid_12">
+        <header class="grid_6">
+          <h1><a href="/">TSAdmin</a></h1>
+        </header>
 
-  <?r if flashbox("%value").size > 0 ?>
-  <div id="error">#{flashbox("%value")}</div>
-  <?r end ?>
+        <?r if @username ?>
+          <nav class="grid_6 last">
+            <ul class="clearfix">
+              <li>
+                <a href="/remap" class="#{'current' if @nav == :remap}">Remap</a>
+              </li>
+              <li>
+                <a href="/logout">Logout</a>
+              </li>
+            </ul>
+          </nav>
+        <?r end ?>
+      </div>
 
-  #{@content}
+      #{flashbox}
 
+      #{@content}
+    </div>
+
+    <footer id="footer">
+      <p>
+        &copy; 2012-2013 SIC! Software GmbH<br />
+        TSAdmin is free software and is licensed under the MIT license.
+      </p>
+    </footer>
+  </div>
 </body>
 </html>
-
