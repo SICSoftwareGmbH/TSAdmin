@@ -30,11 +30,18 @@ class Controller < Ramaze::Controller
     return unless username and password
     return if username.empty? or password.empty?
 
-    return unless APP_CONFIG['auth']['username'].downcase == username.downcase
-    return unless APP_CONFIG['auth']['password'] == Digest::SHA1.hexdigest(password)
+    authenticated = false
+    auth = APP_CONFIG['auth'].is_a?(Array) ? APP_CONFIG['auth'] : [APP_CONFIG['auth']]
+    auth.each do |a|
+      next unless a['username'].downcase == username.downcase
+      next unless a['password'] == Digest::SHA1.hexdigest(password)
+      authenticated = true
+    end
+
+    return unless authenticated
 
     session[:logged_in] = true
-    session[:username] = APP_CONFIG['auth']['username']
+    session[:username] = username.downcase
   end
 
   def login_required
