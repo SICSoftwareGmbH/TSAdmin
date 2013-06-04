@@ -5,6 +5,54 @@ module TSAdmin
   class TrafficServer
     MARKER_TEXT = "CONFIGURATION FROM TSADMIN"
 
+    class RemapError < StandardError; end
+
+    class ValidatingArray < Array
+      class InvalidObject < StandardError; end
+      def add(o)
+        raise InvalidObject unless o.respond_to?(:valid?) && o.valid?
+        super
+      end
+      def method_missing(m, *args, &block)
+        if m.to_s =~ /^get_(\w+)$/ && args.count == 1
+          select{|i| i.respond_to?($1) && i.send($1) == args[0]}
+        else
+          super
+        end
+      end
+    end
+
+    class RemapEntry
+      attr_accessor :type, :id, :from, :to
+
+      def initialize(ts, type, from, to)
+        @ts = ts
+        @type = type.to_sym
+        @from = from.downcase
+        @to = to.downcase
+        @id = Digest::SHA1.hexdigest(@from)
+      end
+
+      def valid?
+        errors.count == 0
+      end
+
+      def errors
+        e = []
+        e << :type_invalid unless [:map, :redirect].include?(@type)
+        e << :from_invalid unless valid_url?(@from)
+        e << :to_invalid unless valid_url?(@to)
+        e << :duplicate_entry unless @ts.remap_entries.get_from(@from).select{|e| e != self}.count == 0
+        e.compact.uniq
+      end
+
+      private
+
+      def valid_url?(url)
+        !!(url =~ URI::regexp) rescue false
+      end
+    end
+
     def initialize(options={})
       @options = {
           'config_path' => '/etc/trafficserver',
@@ -13,81 +61,31 @@ module TSAdmin
       @config_path = @options['config_path']
     end
 
-    def redirects
-      load unless defined?(@redirects)
-      @redirects.dup.freeze
+    def remap_entries
+      load unless defined?(@remap_entries)
+      @remap_entries
     end
 
-    def maps
-      load unless defined?(@maps)
-      @maps.dup.freeze
-    end
-
-    def find_remap_by_id(id)
-      (maps + redirects).select{|m| m[:id] == id}.first
-    end
-
-    def add_remap(type, from, to, options={})
-      load
-
-      return unless list = case type.to_sym
-        when :map
-          @maps
-        when :redirect
-          @redirects
-        else
-          nil
-        end
-
-      id = Digest::SHA1.hexdigest("#{from}_#{to}")
-
-      return false if find_remap_by_id(id)
-      return false unless validate_url(from) && validate_url(to)
-
-      list << {:id => id, :type => type.to_sym, :from => from, :to => to, :options => options}
-
-      true
-    end
-
-    def edit_remap(id, from, to, options=nil)
-      return false unless validate_url(from) && validate_url(to)
-      return false unless entry = find_remap_by_id(id)
-      entry[:from] = from
-      entry[:to] = to
-      entry[:options] = options unless options.nil?
-      entry[:id] = Digest::SHA1.hexdigest("#{from}_#{to}")
-    end
-
-    def delete_remap(id)
-      load
-
-      @maps.delete_if{|m| m[:id] == id}
-      @redirects.delete_if{|m| m[:id] == id}
-
-      true
+    def new_remap_entry(type, from, to)
+      RemapEntry.new(self, type, from, to)
     end
 
     def save
       own_config = ''
-      own_config << "#{marker_begin}\n"
-      redirects.each do |redirect|
-        options = redirect[:options] ? '' : ''
-        own_config << "redirect #{redirect[:from]} #{redirect[:to]} #{options}\n"
+      own_config << "#{self.class.marker_begin}\n"
+      remap_entries.each do |remap_entry|
+        own_config << "#{remap_entry.type.to_s} #{remap_entry.from} #{remap_entry.to}\n"
       end
-      maps.each do |map|
-        options = map[:options] ? '' : ''
-        own_config << "map #{map[:from]} #{map[:to]} #{options}\n"
-      end
-      own_config << "#{marker_end}\n"
+      own_config << "#{self.class.marker_end}\n"
 
       file_content = ''
       in_config_block = false
       own_config_written = false
       File.read(remap_path).each_line do |line|
-        if line.strip == marker_begin
+        if line.strip == self.class.marker_begin
           in_config_block = true
           next
-        elsif line.strip == marker_end
+        elsif line.strip == self.class.marker_end
           in_config_block = false
           next
         end
@@ -112,28 +110,19 @@ module TSAdmin
 
     private
 
-    def marker_begin
-      "# BEGIN #{MARKER_TEXT}"
-    end
-
-    def marker_end
-      "# END #{MARKER_TEXT}"
-    end
-
     def remap_path
       File.join(@config_path, 'remap.config')
     end
 
     def load
-      @redirects = []
-      @maps = []
+      @remap_entries = ValidatingArray.new
 
       in_config_block = false
       File.read(remap_path).each_line do |line|
-        if line.strip == marker_begin
+        if line.strip == self.class.marker_begin
           in_config_block = true
           next
-        elsif line.strip == marker_end
+        elsif line.strip == self.class.marker_end
           in_config_block = false
           next
         end
@@ -141,19 +130,17 @@ module TSAdmin
         next unless in_config_block
 
         type, from, to, *options = line.split(/\s+/)
-        id = Digest::SHA1.hexdigest("#{from}_#{to}")
-        case type.to_sym
-        when :redirect
-          @redirects << {:id => id, :type => type.to_sym, :from => from, :to => to, :options => {}}
-        when :map
-          @maps << {:id => id, :type => type.to_sym, :from => from, :to => to, :options => {}}
-        end
+        @remap_entries << RemapEntry.new(self, type, from, to)
+        @remap_entries.delete_if{|e| !e.valid?}
       end
     end
 
-    def validate_url(url)
-      !!(url =~ URI::regexp) rescue false
+    def self.marker_begin
+      "# BEGIN #{MARKER_TEXT}"
     end
 
+    def self.marker_end
+      "# END #{MARKER_TEXT}"
+    end
   end
 end

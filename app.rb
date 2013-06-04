@@ -17,5 +17,6 @@ APP_CONFIG = {
 # Make sure that Ramaze knows where you are
 Ramaze.options.roots = [__DIR__]
 
-require __DIR__('lib/ts-admin/traffic_server')
+$: << __DIR__('lib')
+require 'ts-admin'
 require __DIR__('controller/init')

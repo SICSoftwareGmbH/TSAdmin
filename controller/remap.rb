@@ -14,13 +14,14 @@ class RemapController < Controller
     if request.post?
       @from = request[:from]
       @to = request[:to]
-      if traffic_server.add_remap(@type, @from, @to)
+      if (entry = traffic_server.new_remap_entry(@type, @from, @to)).valid?
+        traffic_server.remap_entries << entry
         traffic_server.save
         restart_traffic_server
-        flash[:info] = "Remap entry added"
+        flash[:info] = "#{entry.type.to_s.capitalize} definition added"
         call(r('/'))
       else
-        flash[:error] = "Invalid Remap entry"
+        set_errors(entry)
         render_view :form
       end
     else
@@ -37,21 +38,31 @@ class RemapController < Controller
     if request.post?
       @from = request[:from]
       @to = request[:to]
-      if traffic_server.edit_remap(@id, @from, @to)
-        traffic_server.save
-        restart_traffic_server
-        flash[:info] = "Remap entry updated"
-        call(r('/'))
+      if entry = traffic_server.remap_entries.get_id(@id).first
+        entry.from = @from
+        entry.to = @to
+        if entry.valid?
+          traffic_server.save
+          restart_traffic_server
+          flash[:info] = "#{entry.type.to_s.capitalize} definition updated"
+          call(r('/'))
+        else
+          set_errors(entry)
+          render_view :form
+        end
       else
-        flash[:error] = "Invalid Remap entry"
+        flash[:error] = "Remap definition not found"
         render_view :form
       end
     else
-      @entry = traffic_server.find_remap_by_id(@id)
-      @from = @entry[:from]
-      @to = @entry[:to]
-      @type = @entry[:type]
-      render_view :form
+      if @entry = traffic_server.remap_entries.get_id(@id).first
+        @type = @entry.type
+        @from = @entry.from
+        @to = @entry.to
+        render_view :form
+      else
+        call(r('/'))
+      end
     end
   end
 
@@ -59,11 +70,14 @@ class RemapController < Controller
     return unless login_required
     set_env
 
-    traffic_server.delete_remap(request[:id])
-    traffic_server.save
-    restart_traffic_server
+    @id = request[:id]
 
-    flash[:info] = "Remap entry removed"
+    if entry = traffic_server.remap_entries.get_id(@id).first
+      traffic_server.remap_entries.delete(entry)
+      traffic_server.save
+      restart_traffic_server
+      flash[:info] = "#{entry.type.to_s.capitalize} definition removed"
+    end
 
     call(r('/'))
   end
@@ -81,6 +95,19 @@ class RemapController < Controller
     @title = 'Remap'
     @nav = :remap
     @type = request[:type]
+  end
+
+  def set_errors(entry)
+    case entry.errors.first
+    when :type_invalid
+      flash[:error] = "Invalid remap type: #{entry.type.to_s}"
+    when :from_invalid
+      flash[:error] = "Invalid from: #{entry.from.to_s}"
+    when :to_invalid
+      flash[:error] = "Invalid to: #{entry.to.to_s}"
+    when :duplicate_entry
+      flash[:error] = "Duplicate remap definition"
+    end
   end
 
 end

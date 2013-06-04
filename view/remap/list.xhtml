@@ -7,14 +7,14 @@
   </header>
   <p>
     <ul class="remap">
-      <?r @traffic_server.send("#{@type}s").each_with_index do |map, i| ?>
+      <?r @traffic_server.remap_entries.get_type(@type.to_sym).each do |entry| ?>
         <li>
-          <span class="url from"><a href="#{map[:from]}">#{remap_url_highlight_scheme(map[:from])}</a></span>
+          <span class="url from"><a href="#{entry.from}">#{remap_url_highlight_scheme(entry.from)}</a></span>
           <span class="arrow icon-chevron-right"></span>
-          <span class="url to"><a href="#{map[:to]}">#{remap_url_highlight_scheme(map[:to])}</a></span>
+          <span class="url to"><a href="#{entry.to}">#{remap_url_highlight_scheme(entry.to)}</a></span>
           <span class="buttons">
-            <a class="icon-pencil" href="/remap/edit?id=#{map[:id]}" title="Edit"></a>
-            <a class="icon-trash" href="/remap/delete?id=#{map[:id]}" title="Delete"></a>
+            <a class="icon-pencil" href="/remap/edit?id=#{entry.id}" title="Edit"></a>
+            <a class="icon-trash" href="/remap/delete?id=#{entry.id}" title="Delete"></a>
           </span>
         </li>
       <?r end ?>
